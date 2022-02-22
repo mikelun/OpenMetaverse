@@ -111,12 +111,12 @@ function create() {
 
       setTimeout(function () {
         madiaRecorder.stop();
-      }, time);
+      }, time * 5);
     });
 
     setTimeout(function () {
       madiaRecorder.stop();
-    }, time);
+    }, time * 5);
   });
 
   this.socket.on("send", function (data) {
