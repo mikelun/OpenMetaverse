@@ -37,7 +37,7 @@ var config = {
 var melon;
 var game = new Phaser.Game(config);
 
-var keyUp, keyDown, keyLeft, keyRight;
+
 
 function preload ()
 {
@@ -92,17 +92,16 @@ function addPlayer(self, playerInfo) {
   }
 
 function update() {
-    return;
     if (keyUp.isDown) {
-        melon.y -= 3;
+        this.ship.y -= 3;
     }
     if (keyDown.isDown) {
-        melon.y += 3;
+        this.ship.y += 3;
     }
     if (keyLeft.isDown) {
-        melon.x -= 3;
+        this.ship.x -= 3;
     }
     if (keyRight.isDown) {
-        melon.x += 3;
+        this.ship.x += 3;
     }
 }
