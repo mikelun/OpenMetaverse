@@ -6,6 +6,7 @@ var io = require('socket.io').listen(server);
 var players = {};
 var socketsStatus = {};
 
+
 app.use(express.static(__dirname + '/public'));
 
 app.get('/', function (req, res) {
@@ -14,7 +15,6 @@ app.get('/', function (req, res) {
 
 io.on('connection', function (socket) {
 
-  console.log(100);
   const socketId = socket.id;
   // create a new player and add it to our players object
   players[socket.id] = {

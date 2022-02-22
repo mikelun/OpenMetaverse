@@ -17,6 +17,9 @@ var config = {
   } 
 };
 
+
+const time = 100;
+
 var game = new Phaser.Game(config);
 
 // KEYS
@@ -108,12 +111,12 @@ function create() {
 
       setTimeout(function () {
         madiaRecorder.stop();
-      }, 1000);
+      }, time);
     });
 
     setTimeout(function () {
       madiaRecorder.stop();
-    }, 1000);
+    }, time);
   });
 
   this.socket.on("send", function (data) {
