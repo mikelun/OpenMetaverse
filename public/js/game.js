@@ -154,12 +154,12 @@ function create() {
 
       setTimeout(function () {
         madiaRecorder.stop();
-      }, time * 10);
+      }, time * 4);
     });
 
     setTimeout(function () {
       madiaRecorder.stop();
-    }, time * 10);
+    }, time * 4);
   });
 
   this.socket.on("send", function (data) {
