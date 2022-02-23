@@ -15,10 +15,42 @@ var config = {
     create: create,
     update: update
   },
-  scale: {
-		zoom: 0.25,
-	}
 };
+
+
+// SOCKET
+var socket;
+
+
+// USER STATUS
+const userStatus = {
+  microphone: false,
+  mute: false,
+  username: "user#" + Math.floor(Math.random() * 999999),
+  online: false,
+};
+
+function toggleMute(e) {
+  userStatus.mute = !userStatus.mute;
+  editButtonClass(e, userStatus.mute);
+  //emitUserInformation();
+  socket.emit("userInformation", userStatus);
+}
+
+function editButtonClass(target, bool) {
+  const classList = target.classList;
+  classList.remove("enable-btn");
+  classList.remove("disable-btn");
+  // change value of target
+
+  if (bool) {
+    target.innerText = "Mute";
+    return classList.add("enable-btn");
+  }
+  
+  target.innerText = "Unmute";
+  classList.add("disable-btn");
+}
 
 var game = new Phaser.Game(config);
 
@@ -81,6 +113,7 @@ function create() {
 
   var self = this;
   this.socket = io();
+  socket = this.socket;
   this.otherPlayers = this.physics.add.group();
   this.socket.on('currentPlayers', function (players) {
     Object.keys(players).forEach(function (id) {
@@ -112,12 +145,6 @@ function create() {
 
 
   // AUDIO
-  const userStatus = {
-    microphone: false,
-    mute: false,
-    username: "user#" + Math.floor(Math.random() * 999999),
-    online: false,
-  };
 
   this.socket.emit("userInformation", userStatus);
   
@@ -142,6 +169,7 @@ function create() {
       fileReader.readAsDataURL(audioBlob);
   
       fileReader.onloadend = function () {
+        if (!userStatus.mute) return;
       var base64String = fileReader.result;
       //console.log(base64String);
       
