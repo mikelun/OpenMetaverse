@@ -6,7 +6,7 @@ var io = require('socket.io').listen(server);
 var players = {};
 var socketsStatus = {};
 
-var port = process.env.PORT || 8080;
+var port = process.env.PORT || 5000;
 
 
 app.use(express.static(__dirname + '/public'));
