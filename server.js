@@ -22,7 +22,8 @@ io.on('connection', function (socket) {
     x: Math.floor(Math.random() * 300) + 500,
     y: Math.floor(Math.random() * 100) + 500,
     playerId: socket.id,
-    team: (Math.floor(Math.random() * 2) == 0) ? 'red' : 'blue'
+    team: (Math.floor(Math.random() * 2) == 0) ? 'red' : 'blue',
+    account: "player"
   };
   // send the players object to the new player
   socket.emit('currentPlayers', players);
@@ -63,6 +64,6 @@ io.on('connection', function (socket) {
 
 });
 
-server.listen(process.env.PORT || 5000, function () {
+server.listen(3000, function () {
   console.log(`Listening on ${server.address().port}`);
 });

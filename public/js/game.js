@@ -21,6 +21,8 @@ var config = {
 // SOCKET
 var socket;
 
+// TEXTS
+var playerName;
 
 // USER STATUS
 const userStatus = {
@@ -28,6 +30,7 @@ const userStatus = {
   mute: false,
   username: "user#" + Math.floor(Math.random() * 999999),
   online: false,
+  account: "player"
 };
 
 function toggleMute(e) {
@@ -50,6 +53,13 @@ function editButtonClass(target, bool) {
   
   target.innerText = "Unmute";
   classList.add("disable-btn");
+}
+
+// GET METAMASK ACCOUNT
+function changePlayerAccount(account) {
+  // make sub string of account
+  userStatus.account = account.substring(0, 6) + ".." + account.substring(account.length - 4, account.length);
+  emitUserInformation();
 }
 
 var game = new Phaser.Game(config);
@@ -92,7 +102,6 @@ function preload() {
 function create() {
   map = this.add.image(526, 495, 'map');
   map.setScale(2.1);
-
 
   // ANIMS
   const anims = this.anims;
@@ -211,11 +220,17 @@ function addPlayer(self, playerInfo) {
   self.sprite.anims.play("player-walk-back");
   self.cameras.main.startFollow(self.sprite, true);
   self.cameras.main.setBounds(0, 0, 1000, 1000);
+
+  // Change texts
+  playerName = self.add.text(self.sprite.x, self.sprite.y, "player", {fontSize: '20px', color: '#ffffff'});
 }
 
-function addOtherPlayers(self, playerInfo) {
-  const otherPlayer = self.add.sprite(playerInfo.x, playerInfo.y, "characters", 0);
+playerNames = [];
 
+function addOtherPlayers(self, playerInfo) {
+  console.log(playerInfo);
+  const otherPlayer = self.add.sprite(playerInfo.x, playerInfo.y, "characters", 0);
+  const otherPlayerName = self.add.text(playerInfo.x, playerInfo.y, playerInfo.account, {fontSize: '20px', color: '#ffffff'});
   otherPlayer.anims.play("player-walk");
   otherPlayer.playerId = playerInfo.playerId;
   self.otherPlayers.add(otherPlayer);
@@ -226,6 +241,13 @@ function addOtherPlayers(self, playerInfo) {
 
 function update() {
   if (this.sprite) {
+    // WORK WITH TEXTS
+    playerName.x = this.sprite.x - 70;
+    playerName.y = this.sprite.y - 50;
+    // change text of player name
+    if (userStatus.account) {
+      playerName.setText(userStatus.account);
+    }
     var sprite = this.sprite;
     if (keyUp.isDown) {
       sprite.y -= 3;
