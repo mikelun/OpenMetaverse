@@ -6,6 +6,8 @@ var io = require('socket.io').listen(server);
 var players = {};
 var socketsStatus = {};
 
+var port = process.env.PORT || 8080;
+
 
 app.use(express.static(__dirname + '/public'));
 
@@ -64,6 +66,6 @@ io.on('connection', function (socket) {
 
 });
 
-server.listen(8080, function () {
+server.listen(port, function () {
   console.log(`Listening on ${server.address().port}`);
 });
