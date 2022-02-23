@@ -14,21 +14,42 @@ var config = {
     preload: preload,
     create: create,
     update: update
-  } 
+  },
+  scale: {
+		zoom: 0.25,
+	}
 };
 
+var game = new Phaser.Game(config);
 
 const time = 100;
 
-var game = new Phaser.Game(config);
+
 
 // KEYS
 var keyUp, keyDown, keyLeft, keyRight;
 
 
+// BACKGROUND
+var map;
+
 function preload() {
-  this.load.image('ship', 'assets/spaceShips_001.png');
-  this.load.image('otherPlayer', 'assets/enemyBlack5.png');
+  this.load.spritesheet(
+    "characters",
+    "assets/characterSprite.png",
+    {
+      frameWidth: 64,
+      frameHeight: 64,
+      margin: 1,
+      spacing: 2
+    }
+  );
+
+  this.load.image('map', 'assets/mainMap.jpeg');
+
+
+  this.load.image('sprite', 'assets/spaceShips_001.png');
+
   this.load.image('star', 'assets/star_gold.png');
   keyUp = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
   keyDown = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
@@ -37,6 +58,27 @@ function preload() {
 }
 
 function create() {
+  map = this.add.image(526, 495, 'map');
+  map.setScale(2.1);
+
+
+  // ANIMS
+  const anims = this.anims;
+    anims.create({
+      key: "player-walk",
+      frames: anims.generateFrameNumbers("characters", { start: 46, end: 49 }),
+      frameRate: 8,
+      repeat: -1
+    });
+    anims.create({
+      key: "player-walk-back",
+      frames: anims.generateFrameNumbers("characters", { start: 65, end: 68 }),
+      frameRate: 8,
+      repeat: -1
+    });
+
+
+
   var self = this;
   this.socket = io();
   this.otherPlayers = this.physics.add.group();
@@ -93,15 +135,16 @@ function create() {
     var socket = this.socket;
     madiaRecorder.addEventListener("stop", function () {
       var audioBlob = new Blob(audioChunks);
-      console.log(audioBlob + "BLOOOB");
       audioChunks = [];
 
+      
       var fileReader = new FileReader();
       fileReader.readAsDataURL(audioBlob);
-      console.log(fileReader);
+  
       fileReader.onloadend = function () {
       var base64String = fileReader.result;
       //console.log(base64String);
+      
       socket.emit("voice", base64String);
 
       };
@@ -111,12 +154,12 @@ function create() {
 
       setTimeout(function () {
         madiaRecorder.stop();
-      }, time * 5);
+      }, time * 10);
     });
 
     setTimeout(function () {
       madiaRecorder.stop();
-    }, time * 5);
+    }, time * 10);
   });
 
   this.socket.on("send", function (data) {
@@ -132,59 +175,72 @@ function emitUserInformation() {
 }
 
 function addPlayer(self, playerInfo) {
-  self.ship = self.physics.add.image(playerInfo.x, playerInfo.y, 'ship').setOrigin(0.5, 0.5).setDisplaySize(53, 40);
-  if (playerInfo.team === 'blue') {
-    self.ship.setTint(0x0000ff);
-  } else {
-    self.ship.setTint(0xff0000);
-  }
+  self.sprite = self.physics.add
+      .sprite(400, 400, "characters", 0)
+      .setSize(22, 33)
+      .setOffset(23, 27);
+
+  self.sprite.anims.play("player-walk-back");
+  self.cameras.main.startFollow(self.sprite, true);
+  self.cameras.main.setBounds(0, 0, 1000, 1000);
 }
 
 function addOtherPlayers(self, playerInfo) {
-  const otherPlayer = self.add.sprite(playerInfo.x, playerInfo.y, 'otherPlayer').setOrigin(0.5, 0.5).setDisplaySize(53, 40);
-  if (playerInfo.team === 'blue') {
-    //otherPlayer.setTint(0x0000ff);
-  } else {
-    //otherPlayer.setTint(0xff0000);
-  }
+  const otherPlayer = self.add.sprite(playerInfo.x, playerInfo.y, "characters", 0);
+
+  otherPlayer.anims.play("player-walk");
   otherPlayer.playerId = playerInfo.playerId;
   self.otherPlayers.add(otherPlayer);
+
+  // const camera  = this.cameras.main;
+  // camera.setBounds(0, 0, 1400, 1400);
 }
 
 function update() {
-  if (this.ship) {
+  if (this.sprite) {
+    var sprite = this.sprite;
     if (keyUp.isDown) {
-      this.ship.y -= 3;
-      this.ship.rotation = -3.14;
+      sprite.y -= 3;
+      //this.sprite.rotation = -3.14;
   }
   if (keyDown.isDown) {
-      this.ship.y += 3;
-      this.ship.rotation = 0;
+      sprite.y += 3;
+      //this.sprite.rotation = 0;
   }
   if (keyLeft.isDown) {
-    this.ship.x -= 3;
-    this.ship.rotation = 3.14 / 2;
+    sprite.x -= 3;
+    //this.sprite.rotation = 3.14 / 2;
+    sprite.setFlipX(true);
   }
   if (keyRight.isDown) {
-      this.ship.x += 3;
-      this.ship.rotation = -3.14 / 2;
+      sprite.x += 3;
+      //this.sprite.rotation = -3.14 / 2;
+      sprite.setFlipX(false);
+  }
+
+  if (keyLeft.isDown || keyRight.isDown || keyDown.isDown) {
+      sprite.anims.play("player-walk", true);
+    } else if (keyUp.isDown) {
+      sprite.anims.play("player-walk-back", true);
+    } else {
+      sprite.anims.stop();
   }
   
   
   
     
     // emit player movement
-    var x = this.ship.x;
-    var y = this.ship.y;
-    var r = this.ship.rotation;
-    if (this.ship.oldPosition && (x !== this.ship.oldPosition.x || y !== this.ship.oldPosition.y || r !== this.ship.oldPosition.rotation)) {
-      this.socket.emit('playerMovement', { x: this.ship.x, y: this.ship.y, rotation: this.ship.rotation });
+    var x = this.sprite.x;
+    var y = this.sprite.y;
+    var r = this.sprite.rotation;
+    if (this.sprite.oldPosition && (x !== this.sprite.oldPosition.x || y !== this.sprite.oldPosition.y || r !== this.sprite.oldPosition.rotation)) {
+      this.socket.emit('playerMovement', { x: this.sprite.x, y: this.sprite.y, rotation: this.sprite.rotation });
     }
     // save old position data
-    this.ship.oldPosition = {
-      x: this.ship.x,
-      y: this.ship.y,
-      rotation: this.ship.rotation
+    this.sprite.oldPosition = {
+      x: this.sprite.x,
+      y: this.sprite.y,
+      rotation: this.sprite.rotation
     };
   }
 }

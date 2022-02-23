@@ -19,8 +19,8 @@ io.on('connection', function (socket) {
   // create a new player and add it to our players object
   players[socket.id] = {
     rotation: 0,
-    x: Math.floor(Math.random() * 700) + 50,
-    y: Math.floor(Math.random() * 500) + 50,
+    x: Math.floor(Math.random() * 300) + 500,
+    y: Math.floor(Math.random() * 100) + 500,
     playerId: socket.id,
     team: (Math.floor(Math.random() * 2) == 0) ? 'red' : 'blue'
   };
@@ -40,7 +40,6 @@ io.on('connection', function (socket) {
 
   // ADDING VOICE PART
   socket.on("voice", function (data) {
-    console.log("VOICE WAS LOADED");
     var newData = data.split(";");
     newData[0] = "data:audio/ogg;";
     newData = newData[0] + newData[1];
@@ -52,7 +51,6 @@ io.on('connection', function (socket) {
  
   socket.on("userInformation", function (data) {
     socketsStatus[socketId] = data;
-    console.log(socketsStatus);
     io.sockets.emit("usersUpdate",socketsStatus);
   });
 
