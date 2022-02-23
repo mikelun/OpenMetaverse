@@ -1,3 +1,5 @@
+// const io = require("socket.io-client");
+
 var config = {
   type: Phaser.AUTO,
   parent: 'phaser-example',
