@@ -121,7 +121,7 @@ function create() {
 
 
   var self = this;
-  this.socket = io( {transports: ['websocket']});
+  this.socket = io('wss://om.buildship.dev', {transports: ['websocket']});
   socket = this.socket;
   this.otherPlayers = this.physics.add.group();
   this.socket.on('currentPlayers', function (players) {
