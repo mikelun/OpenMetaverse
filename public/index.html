@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html>
 
@@ -110,6 +112,10 @@ ul.users li{
         <div class="controller" id="con">
             <button class="control-btn disable-btn" onclick="connectMetamask(this)">Connect metamask</button>
             <button class="control-btn disable-btn" onclick="toggleMute(this)">Unmute</button>
+        </div>
+        <div id='video-chat-container' class='video-position' style='display: none'>
+            <video id='local-video' autoplay='autoplay'></video>
+            <video id='remote-video' autoplay='autoplay'></video>
         </div>
         <script src="https://unpkg.com/peerjs@1.3.1/dist/peerjs.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/web3@1.7.0/lib/index.min.js"></script>
