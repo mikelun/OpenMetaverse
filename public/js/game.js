@@ -121,7 +121,7 @@ function create() {
 
 
   var self = this;
-  this.socket = io('wss://om.buildship.dev', {transports: ['websocket']});
+  this.socket = io();
   socket = this.socket;
   this.otherPlayers = this.physics.add.group();
   this.socket.on('currentPlayers', function (players) {
@@ -155,54 +155,54 @@ function create() {
 
   // AUDIO
 
-  this.socket.emit("userInformation", userStatus);
+  // this.socket.emit("userInformation", userStatus);
   
-  navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
-    console.log("Microphone is on");
-    var madiaRecorder = new MediaRecorder(stream);
-    madiaRecorder.start();
+  // navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+  //   console.log("Microphone is on");
+  //   var madiaRecorder = new MediaRecorder(stream);
+  //   madiaRecorder.start();
 
-    var audioChunks = [];
+  //   var audioChunks = [];
 
-    madiaRecorder.addEventListener("dataavailable", function (event) {
-      audioChunks.push(event.data);
-    });
+  //   madiaRecorder.addEventListener("dataavailable", function (event) {
+  //     audioChunks.push(event.data);
+  //   });
 
-    var socket = this.socket;
-    madiaRecorder.addEventListener("stop", function () {
-      var audioBlob = new Blob(audioChunks);
-      audioChunks = [];
+  //   var socket = this.socket;
+  //   madiaRecorder.addEventListener("stop", function () {
+  //     var audioBlob = new Blob(audioChunks);
+  //     audioChunks = [];
 
       
-      var fileReader = new FileReader();
-      fileReader.readAsDataURL(audioBlob);
+  //     var fileReader = new FileReader();
+  //     fileReader.readAsDataURL(audioBlob);
   
-      fileReader.onloadend = function () {
-        if (!userStatus.mute) return;
-      var base64String = fileReader.result;
-      //console.log(base64String);
+  //     fileReader.onloadend = function () {
+  //       if (!userStatus.mute) return;
+  //     var base64String = fileReader.result;
+  //     //console.log(base64String);
       
-      socket.emit("voice", base64String);
+  //     socket.emit("voice", base64String);
 
-      };
+  //     };
 
-      madiaRecorder.start();
+  //     madiaRecorder.start();
 
 
-      setTimeout(function () {
-        madiaRecorder.stop();
-      }, time * 7);
-    });
+  //     setTimeout(function () {
+  //       madiaRecorder.stop();
+  //     }, time * 7);
+  //   });
 
-    setTimeout(function () {
-      madiaRecorder.stop();
-    }, time * 7);
-  });
+  //   setTimeout(function () {
+  //     madiaRecorder.stop();
+  //   }, time * 7);
+  // });
 
-  this.socket.on("send", function (data) {
-    var audio = new Audio(data);
-    audio.play();
-  });
+  // this.socket.on("send", function (data) {
+  //   var audio = new Audio(data);
+  //   audio.play();
+  // });
     
 
 }

@@ -107,10 +107,11 @@ ul.users li{
     </head>
 
     <body>
-        <div class="controller">
+        <div class="controller" id="con">
             <button class="control-btn disable-btn" onclick="connectMetamask(this)">Connect metamask</button>
             <button class="control-btn disable-btn" onclick="toggleMute(this)">Unmute</button>
         </div>
+        <script src="https://unpkg.com/peerjs@1.3.1/dist/peerjs.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/web3@1.7.0/lib/index.min.js"></script>
         
         <script src="/socket.io/socket.io.js"></script>
