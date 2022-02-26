@@ -78,7 +78,7 @@ async function setLocalStream(mediaConstraints) {
   }
 
   localStream = stream
-  localVideoComponent.srcObject = stream
+  //localVideoComponent.srcObject = stream
 }
 
 
