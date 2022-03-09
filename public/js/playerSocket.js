@@ -44,7 +44,9 @@ function addPlayer(self, playerInfo) {
       .setSize(22, 33)
       .setOffset(23, 27)
       .setScale(0.5);
-  
+    var test = self.add.sprite(400, 400, "characters0", 0).setSize(22, 33);
+    createAnims(self);
+    test.anims.play("hero-walk-down");
     self.sprite.anims.play("player-walk-back");
     self.cameras.main.startFollow(self.sprite, true);
     self.cameras.main.setBounds(0, 0, 1000, 1000);
@@ -54,7 +56,7 @@ function addPlayer(self, playerInfo) {
 }
 
 function addOtherPlayers(self, playerInfo) {
-    const otherPlayer = self.add.sprite(playerInfo.x, playerInfo.y, "characters", 0);
+    const otherPlayer = self.add.sprite(playerInfo.x, playerInfo.y, "characters", 0).setScale(0.5);
     //const otherPlayerName = self.add.text(playerInfo.x, playerInfo.y, playerInfo.account, { fontSize: '20px', color: '#ffffff' });
     otherPlayer.anims.play("player-walk");
     otherPlayer.playerId = playerInfo.playerId;
@@ -62,4 +64,15 @@ function addOtherPlayers(self, playerInfo) {
   
     // const camera  = this.cameras.main;
     // camera.setBounds(0, 0, 1400, 1400);
+}
+
+
+function createAnims(self) {
+    const anims = self.anims;
+    anims.create({
+        key: "hero-walk-down",
+        frames: anims.generateFrameNumbers("characters0", { start: 0, end: 2 }),
+        frameRate: 8,
+        repeat: -1
+    });
 }

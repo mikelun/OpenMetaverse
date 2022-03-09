@@ -50,7 +50,17 @@ var map;
 
 
 function preload() {
-    this.load.image('tiles', 'assets/tiles/indoors.png');
+    for (let i = 0; i < 4; i++) {
+        this.load.spritesheet(`characters${i}`, 
+        `assets/Other/${i}.png`,
+        {
+        frameWidth: 32,
+        frameHeight: 32,
+        margin: 0,
+        spacing: 0
+      });
+    }
+    this .load.image('tiles', 'assets/tiles/indoors.png');
     this.load.tilemapTiledJSON('dungeon', 'assets/tiles/mainmap.json');
     this.load.spritesheet(
       "characters",
@@ -77,6 +87,13 @@ function preload() {
 
 
 function create() {
+
+    // create button
+    const button = document.createElement('div');
+    button.className = 'button';
+    button.innerText = 'muted';
+    this.add.dom(100, 100, button);
+
     const dungeon = this.make.tilemap({ key: 'dungeon' });
     const tileset = dungeon.addTilesetImage('indoors', 'tiles');
 
@@ -95,15 +112,18 @@ function create() {
     anims.create({
         key: "player-walk",
         frames: anims.generateFrameNumbers("characters", { start: 46, end: 49 }),
-        frameRate: 8,
+        frameRate: 16,
         repeat: -1
     });
     anims.create({
         key: "player-walk-back",
         frames: anims.generateFrameNumbers("characters", { start: 65, end: 68 }),
-        frameRate: 8,
+        frameRate: 16,
         repeat: -1
     });
+    
+    
+    
 
 
 
