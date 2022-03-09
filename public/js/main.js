@@ -18,9 +18,13 @@ let peers = {};
 /////////// PHASER 3 CONFIG ///////////
 var config = {
     type: Phaser.AUTO,
-    parent: 'phaser-example',
-    width: 800,
-    height: 600,
+    scale: {
+        mode: Phaser.Scale.FIT,
+        parent: 'phaser-example',
+        autoCenter: Phaser.Scale.CENTER_BOTH,
+        width: 400,
+        height: 250,
+    },
     physics: {
       default: 'arcade',
       arcade: {
@@ -46,7 +50,8 @@ var map;
 
 
 function preload() {
-    
+    this.load.image('tiles', 'assets/tiles/indoors.png');
+    this.load.tilemapTiledJSON('dungeon', 'assets/tiles/mainmap.json');
     this.load.spritesheet(
       "characters",
       "assets/characterSprite.png",
@@ -72,8 +77,13 @@ function preload() {
 
 
 function create() {
-    map = this.add.image(526, 495, 'map');
-    map.setScale(2.1);
+    const dungeon = this.make.tilemap({ key: 'dungeon' });
+    const tileset = dungeon.addTilesetImage('indoors', 'tiles');
+
+    dungeon.createStaticLayer('background', tileset);
+    dungeon.createStaticLayer('structure', tileset);
+    //map = this.add.image(526, 495, 'map');
+    //map.setScale(2.1);
 
     navigator.mediaDevices.getUserMedia({audio: true, video: false}).then(stream => {
         console.log('got stream');
@@ -109,25 +119,27 @@ function create() {
 
 } 
 
+const spriteSpeed = 2;
+
 function update() {
     if (this.sprite) {
 
       var sprite = this.sprite;
       if (keyUp.isDown) {
-        sprite.y -= 3;
+        sprite.y -= spriteSpeed;
         //this.sprite.rotation = -3.14;
       }
       if (keyDown.isDown) {
-        sprite.y += 3;
+        sprite.y += spriteSpeed;
         //this.sprite.rotation = 0;
       }
       if (keyLeft.isDown) {
-        sprite.x -= 3;
+        sprite.x -= spriteSpeed;
         //this.sprite.rotation = 3.14 / 2;
         sprite.setFlipX(true);
       }
       if (keyRight.isDown) {
-        sprite.x += 3;
+        sprite.x += spriteSpeed;
         //this.sprite.rotation = -3.14 / 2;
         sprite.setFlipX(false);
       }

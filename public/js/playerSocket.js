@@ -42,7 +42,8 @@ function addPlayer(self, playerInfo) {
     self.sprite = self.physics.add
       .sprite(400, 400, "characters", 0)
       .setSize(22, 33)
-      .setOffset(23, 27);
+      .setOffset(23, 27)
+      .setScale(0.5);
   
     self.sprite.anims.play("player-walk-back");
     self.cameras.main.startFollow(self.sprite, true);
